@@ -1,0 +1,28 @@
+version: '3'
+services:
+  microservice-account:
+    build: ./microservice-account
+    ports:
+      - "8081:8081"
+    networks:
+      - microservices-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3307/test?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD:
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: test
+      MYSQL_USER: client
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "3307:3307"
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge

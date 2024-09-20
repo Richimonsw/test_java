@@ -1,0 +1,51 @@
+version: '3'
+services:
+  microservice-client:
+    build: ./microservice-client
+    ports:
+      - "8081:8081"
+    networks:
+      - microservices-network
+    depends_on:
+      - mysql
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3308/test?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: client
+      SPRING_DATASOURCE_PASSWORD: 123456
+
+  microservice-account:
+    build: ./microservice-account
+    ports:
+      - "8082:8082"
+    networks:
+      - microservices-network
+    depends_on:
+      - mysql
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3308/test?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: client
+      SPRING_DATASOURCE_PASSWORD: 123456
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: test
+      MYSQL_USER: client
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "3308:3306"
+    networks:
+      - microservices-network
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
